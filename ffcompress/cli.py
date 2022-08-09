@@ -13,6 +13,10 @@ def main():
                         version=f'ffcompress {__version__}')
     parser.add_argument('FILE', help='File to compress')
     parser.add_argument('SIZE', help="Size to compress to e.g. '1gb', '50mb', '200kb'")
+    parser.add_argument('-y', '--yes',
+                        dest='confirm_overwrite',
+                        action='store_true',
+                        help='Overwrite output files without asking')
     args = parser.parse_args()
 
     try:
@@ -34,6 +38,11 @@ def main():
             raise ValueError(f"File {cb(args.FILE, 'r')} is already smaller than {blocks} {block_size}")
 
         output_file = f"{args.FILE.rsplit('.', 1)[0]}_Compressed.mp4"
+        if os.path.exists(output_file) and not args.confirm_overwrite:
+            overwrite = input(f"{c('▲', 'y')} File {c(output_file, 'y')} already exists. Overwrite? (y/N): ")
+            if overwrite != 'y':
+                raise KeyboardInterrupt
+        
         ffcompress.pbar(args.FILE, output_file, blocks, block_size)
 
         output_size = 1/blocks_to_bytes(1/os.path.getsize(output_file), block_size)
@@ -42,7 +51,7 @@ def main():
         print(c('➔', 'e'), 'Output file:', c(output_file, 'e'))
 
     except KeyboardInterrupt:
-        print(c('Aborted', 'r'))
+        print(c('× Operation cancelled', 'r'))
     except Exception as e:
         # print(c(f'{type(e).__name__}:', 'r'))
         print(c('×', 'r'), str(e))
