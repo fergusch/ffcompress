@@ -23,20 +23,6 @@ def c(text, color, bold=False):
 def cb(text, color):
     return c(text, color, bold=True)
 
-# def ffprobe(args):
-#     if not which('ffprobe'):
-#         print(c('×', 'r'), 'ffprobe is not installed')
-#         raise ModuleNotFoundError
-#     p = Popen([which('ffprobe'), *args], stdout=PIPE, stderr=PIPE)
-#     return p
-
-# def ffmpeg(args):
-#     if not which('ffmpeg'):
-#        print(c('×', 'r'), 'ffmpeg is not installed')
-#        raise ModuleNotFoundError
-#     p = Popen([which('ffmpeg'), *args], stdout=PIPE, stderr=PIPE)
-#     return p
-
 def get_len_seconds(file):
     if not which('ffprobe'):
         raise ModuleNotFoundError('ffprobe is not installed')
@@ -49,7 +35,7 @@ def get_len_seconds(file):
     return float(p.communicate()[0].decode('utf-8'))
 
 def get_required_bitrate(file, bytes):
-    return ((bytes*8) / get_len_seconds(file))*0.98
+    return ((bytes*8) / get_len_seconds(file))*0.97
 
 def blocks_to_bytes(blocks, block_size):
     if block_size == 'GB':
